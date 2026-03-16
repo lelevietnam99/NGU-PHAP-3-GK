@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trắc Nghiệm Ngữ Pháp Hán Cổ - Khoa PHTX</title>
+    <style>
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --accent-color: #1976d2; 
+            --correct-color: #4caf50;
+            --wrong-color: #f44336;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-top: 5px solid var(--accent-color);
+            position: relative;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            text-decoration: none;
+            color: #555;
+            font-size: 0.9rem;
+            background: #eee;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: 0.2s;
+        }
+
+        .back-btn:hover {
+            background: #ddd;
+            color: #000;
+        }
+
+        h1 {
+            font-size: 1.6rem;
+            color: var(--accent-color);
+            margin-top: 25px;
+            margin-bottom: 5px;
+        }
+
+        .tips {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            text-align: left;
+            margin-top: 20px;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        /* Thiết kế từng câu hỏi */
+        .question-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .highlight {
+            color: #d32f2f;
+            font-family: "KaiTi", serif;
+            font-size: 1.3rem;
+        }
+
+        /* Hộp dịch nghĩa 3 lớp */
+        .translation-box {
+            background-color: #fafafa;
+            border-left: 3px solid #b0bec5;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .han-viet {
+            font-size: 0.95rem;
+            color: #d32f2f; /* Màu đỏ đô cho phiên âm */
+            margin-bottom: 5px;
+            font-style: italic;
+        }
+
+        .word-by-word {
+            font-size: 0.95rem;
+            color: #1565c0; /* Màu xanh đậm cho dịch từng từ */
+            margin-bottom: 5px;
+            line-height: 1.8;
+        }
+
+        .full-trans {
+            font-size: 0.95rem;
+            color: #424242; /* Màu xám đậm cho nghĩa cả câu */
+        }
+
+        .translation-box strong {
+            color: #555;
+            font-style: normal;
+        }
+
+        /* Phần nút bấm đáp án */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .option-btn {
+            background-color: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: left;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background-color: #e3f2fd;
+            border-color: var(--accent-color);
+        }
+
+        .option-btn.correct {
+            background-color: #e8f5e9;
+            border-color: var(--correct-color);
+            color: #2e7d32;
+            font-weight: bold;
+        }
+
+        .option-btn.wrong {
+            background-color: #ffebee;
+            border-color: var(--wrong-color);
+            color: #c62828;
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .options-grid { grid-template-columns: 1fr; }
+            .back-btn { top: 10px; left: 10px; padding: 5px 10px;}
+            h1 { font-size: 1.3rem; margin-top: 35px;}
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <a href="index.html" class="back-btn">⬅ Menu</a>
+        <h1>🎯 Trắc Nghiệm Ngữ Pháp</h1>
+        <p style="color: #666; margin: 0;">Môn: Hán cổ - Khoa PHTX</p>
+
+        <div class="tips">
+            <strong>💡 Mẹo nhỏ:</strong> 
+            <br>- <b>之</b> thường là Trợ từ kết cấu (nghĩa là "của").
+            <br>- <b>能, 可, 要</b> thường là Trợ động từ (chỉ khả năng, sự cần thiết).
+            <br>- <b>中, 外, 下</b> là Phương vị từ (chỉ vị trí).
+            <br>- <b>不, 既, 莫</b> thường là Phó từ.
+        </div>
+    </header>
+
+    <main id="quizContainer"></main>
+
+</div>
+
+<script>
+    // DỮ LIỆU CÂU HỎI KÈM 3 LỚP GIẢI NGHĨA
+    const quizData = [
+        {
+            id: 1,
+            q: "身體之外面有皮毛. Trong câu này, <span class='highlight'>之</span> là:",
+            hanviet: "Thân thể chi ngoại diện hữu bì mao",
+            word: "身體(thân thể) 之(của) 外面(mặt ngoài) 有(có) 皮毛(da lông)",
+            full: "Mặt ngoài của thân thể có da, lông.",
+            opts: { a: "Liên từ", b: "Giới từ", c: "Phó từ", d: "Trợ từ kết cấu" },
+            ans: "d"
+        },
+        {
+            id: 2,
+            q: "今我輩既是佛之弟子. Trong câu này, <span class='highlight'>之</span> là:",
+            hanviet: "Kim ngã bối ký thị Phật chi đệ tử",
+            word: "今(nay) 我輩(chúng ta) 既是(đã là) 佛(Phật) 之(của) 弟子(đệ tử)",
+            full: "Nay chúng ta đã là đệ tử của Phật.",
+            opts: { a: "Liên từ", b: "Trợ từ kết cấu", c: "Phó từ", d: "Giới từ" },
+            ans: "b"
+        },
+        {
+            id: 3,
+            q: "不可以不救。Trong câu này, <span class='highlight'>可以</span> là:",
+            hanviet: "Bất khả dĩ bất cứu",
+            word: "不可以(không thể) 不救(không cứu)",
+            full: "Không thể không cứu.",
+            opts: { a: "Trợ động từ", b: "Liên từ", c: "Trợ từ", d: "Giới từ" },
+            ans: "a"
+        },
+        {
+            id: 4,
+            q: "布十寸為一尺。Trong câu này, <span class='highlight'>寸</span> là:",
+            hanviet: "Bố thập thốn vi nhất xích",
+            word: "布(vải) 十寸(mười tấc) 為(là) 一尺(một thước)",
+            full: "Mười tấc vải là một thước.",
+            opts: { a: "Phó từ", b: "Tính từ", c: "Lượng từ", d: "Trợ từ" },
+            ans: "c"
+        },
+        {
+            id: 5,
+            q: "脊為群骨之主。Trong câu này, <span class='highlight'>之</span> là:",
+            hanviet: "Tích vi quần cốt chi chủ",
+            word: "脊(xương sống) 為(là) 群骨(các xương) 之(của) 主(chủ/chính)",
+            full: "Xương sống là xương chính của tất cả các xương.",
+            opts: { a: "Phó từ", b: "Liên từ", c: "Trợ từ kết cấu", d: "Giới từ" },
+            ans: "c"
+        },
+        {
+            id: 6,
+            q: "脊中有髓。Trong câu này, <span class='highlight'>中</span> là:",
+            hanviet: "Tích trung hữu tủy",
+            word: "脊(xương sống) 中(trong) 有(có) 髓(tủy)",
+            full: "Trong xương sống có tủy.",
+            opts: { a: "Liên từ", b: "Phương vị từ", c: "Giới từ", d: "Phó từ" },
+            ans: "b"
+        },
+        {
+            id: 7,
+            q: "中秋之夜。Trong câu này, <span class='highlight'>之</span> là:",
+            hanviet: "Trung thu chi dạ",
+            word: "中秋(trung thu) 之(của) 夜(đêm)",
+            full: "Đêm Trung thu.",
+            opts: { a: "Liên từ", b: "Phó từ", c: "Trợ từ kết cấu", d: "Giới từ" },
+            ans: "c"
+        },
+        {
+            id: 8,
+            q: "無骨人不能立。Trong câu này, <span class='highlight'>能</span> là:",
+            hanviet: "Vô cốt nhân bất năng lập",
+            word: "無(không) 骨(xương) 人(người) 不能(không thể) 立(đứng)",
+            full: "Không có xương, người ta không thể đứng được.",
+            opts: { a: "Liên từ", b: "Giới từ", c: "Trợ động từ", d: "Trợ từ" },
+            ans: "c"
+        },
+        {
+            id: 9,
+            q: "釋迦是佛之姓。Trong câu này, <span class='highlight'>之</span> là:",
+            hanviet: "Thích Ca thị Phật chi tính",
+            word: "釋迦(Thích Ca) 是(là) 佛(Phật) 之(của) 姓(họ)",
+            full: "Thích Ca là họ của Phật.",
+            opts: { a: "Phó từ", b: "Giới từ", c: "Trợ từ kết cấu", d: "Liên từ" },
+            ans: "c"
+        },
+        {
+            id: 10,
+            q: "無筋人不能舉動。Trong câu này, <span class='highlight'>能</span> là:",
+            hanviet: "Vô cân nhân bất năng cử động",
+            word: "無(không) 筋(gân) 人(người) 不能(không thể) 舉動(cử động)",
+            full: "Không có gân, người ta không thể cử động được.",
+            opts: { a: "Trợ động từ", b: "Trợ từ", c: "Liên từ", d: "Giới từ" },
+            ans: "a"
+        },
+        {
+            id: 11,
+            q: "人不讀書，不能成人。Trong câu này, <span class='highlight'>能</span> là:",
+            hanviet: "Nhân bất độc thư, bất năng thành nhân",
+            word: "人(người) 不(không) 讀書(đọc sách)， 不能(không thể) 成人(thành người)",
+            full: "Người không đọc sách, không thể thành người.",
+            opts: { a: "Giới từ", b: "Trợ động từ", c: "Liên từ", d: "Trợ từ" },
+            ans: "b"
+        },
+        {
+            id: 12,
+            q: "手與皮為觸官。Trong câu này, <span class='highlight'>與</span> là:",
+            hanviet: "Thủ dữ bì vi xúc quan",
+            word: "手(tay) 與(và) 皮(da) 為(là) 觸官(cơ quan xúc giác)",
+            full: "Tay và da là cơ quan xúc giác.",
+            opts: { a: "Giới từ", b: "Phó từ", c: "Liên từ", d: "Trợ từ" },
+            ans: "c"
+        },
+        {
+            id: 13,
+            q: "不能聽者為聾，Trong câu này, <span class='highlight'>能</span> là:",
+            hanviet: "Bất năng thính giả vi lung",
+            word: "不能(không thể) 聽(nghe) 者(người) 為(là) 聾(điếc)",
+            full: "Người không nghe được là người điếc.",
+            opts: { a: "Trợ động từ", b: "Liên từ", c: "Giới từ", d: "Trợ từ" },
+            ans: "a"
+        },
+        {
+            id: 14,
+            q: "不能聽者為聾，Trong câu này, <span class='highlight'>不</span> là:",
+            hanviet: "Bất năng thính giả vi lung",
+            word: "不(không) 能(thể) 聽(nghe) 者(người) 為(là) 聾(điếc)",
+            full: "Người không nghe được là người điếc.",
+            opts: { a: "Trợ từ", b: "Phó từ", c: "Liên từ", d: "Giới từ" },
+            ans: "b"
+        },
+        {
+            id: 15,
+            q: "不能視者為肓，Trong câu này, <span class='highlight'>能</span> là:",
+            hanviet: "Bất năng thị giả vi manh",
+            word: "不能(không thể) 視(nhìn) 者(người) 為(là) 肓(mù)",
+            full: "Người không thấy được là người mù.",
+            opts: { a: "Trợ từ", b: "Liên từ", c: "Trợ động từ", d: "Giới từ" },
+            ans: "c"
+        }
+    ];
+
+    const container = document.getElementById('quizContainer');
+
+    // Hàm tạo giao diện trắc nghiệm
+    function renderQuiz() {
+        quizData.forEach((item) => {
+            let card = document.createElement('div');
+            card.className = 'question-card';
+            card.id = `q-card-${item.id}`;
+
+            let html = `
+                <div class="question-text">${item.id}/ ${item.q}</div>
+                <div class="translation-box">
+                    <div class="han-viet"><strong>Âm Hán Việt:</strong> ${item.hanviet}</div>
+                    <div class="word-by-word"><strong>Dịch từng từ:</strong> ${item.word}</div>
+                    <div class="full-trans"><strong>Nghĩa cả câu:</strong> ${item.full}</div>
+                </div>
+                <div class="options-grid">
+                    <button class="option-btn" onclick="checkAnswer(${item.id}, 'a')">A. ${item.opts.a}</button>
+                    <button class="option-btn" onclick="checkAnswer(${item.id}, 'b')">B. ${item.opts.b}</button>
+                    <button class="option-btn" onclick="checkAnswer(${item.id}, 'c')">C. ${item.opts.c}</button>
+                    <button class="option-btn" onclick="checkAnswer(${item.id}, 'd')">D. ${item.opts.d}</button>
+                </div>
+                <div class="feedback" id="feedback-${item.id}"></div>
+            `;
+            card.innerHTML = html;
+            container.appendChild(card);
+        });
+    }
+
+    // Hàm kiểm tra đúng/sai khi click
+    function checkAnswer(questionId, selectedOpt) {
+        let question = quizData.find(q => q.id === questionId);
+        let correctOpt = question.ans;
+        
+        let card = document.getElementById(`q-card-${questionId}`);
+        let buttons = card.querySelectorAll('.option-btn');
+        let feedback = document.getElementById(`feedback-${questionId}`);
+
+        buttons.forEach(btn => btn.disabled = true);
+
+        let btnA = buttons[0]; let btnB = buttons[1]; let btnC = buttons[2]; let btnD = buttons[3];
+        
+        let selectedBtn = 
+            selectedOpt === 'a' ? btnA :
+            selectedOpt === 'b' ? btnB :
+            selectedOpt === 'c' ? btnC : btnD;
+
+        let correctBtn = 
+            correctOpt === 'a' ? btnA :
+            correctOpt === 'b' ? btnB :
+            correctOpt === 'c' ? btnC : btnD;
+
+        if (selectedOpt === correctOpt) {
+            selectedBtn.classList.add('correct');
+            feedback.innerHTML = "✅ Chính xác!";
+            feedback.style.color = "var(--correct-color)";
+        } else {
+            selectedBtn.classList.add('wrong');
+            correctBtn.classList.add('correct');
+            feedback.innerHTML = `❌ Sai rồi! Đáp án đúng là <b>${correctOpt.toUpperCase()}</b>.`;
+            feedback.style.color = "var(--wrong-color)";
+        }
+
+        feedback.style.display = "block";
+    }
+
+    renderQuiz();
+</script>
+
+</body>
+</html>
